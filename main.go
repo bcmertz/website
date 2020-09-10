@@ -1,19 +1,20 @@
 package main
 
 import (
-	"flag"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	log.Println("Parsing flags")
-	port := flag.String("p", "3000", "port to serve on")
-	flag.Parse()
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "3000"
+	}
 
 	fileServer := http.FileServer(http.Dir("src"))
 	http.Handle("/", fileServer)
 
-	log.Printf("Starting server on port %v", *port)
-	log.Fatal(http.ListenAndServe(":"+*port, nil))
+	log.Printf("Starting server on port %v", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }
